@@ -1,0 +1,5 @@
+05/11/26
+- im starting this project because i am tired of leetcoding and dsa and want to do something else 
+-also this project will be coded in c because i saw the gate syllabus has c language in it 
+- i'll be following -- https://viewsourcecode.org/snaptoken/kilo/index.html
+
