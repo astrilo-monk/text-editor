@@ -1,51 +1,22 @@
-05/11/26
-- im starting this project because i am tired of leetcoding and dsa and want to do something else 
--also this project will be coded in c because i saw the gate syllabus has c language in it 
-- i'll be following -- https://viewsourcecode.org/snaptoken/kilo/index.html
--i am also doing it on a linux os , downloading c on windows was a pain in the ass
-- c works perfectly on linux checked using a new file "hello.c" i'm gonna keep this file just for the love of the game
-- so startin with the book , it says its an update to antirez's kilo editor
--name of the editor is kilo
--make function in C is speacial because it is the starting point when i run any program when i return from main , the program exits and passes the returned integer back to the os , ie 0 (return 0) a return value of 0 indicates success
-- c is a compiled language so we need to run our program throught a C compiler to turn it into an executeable file , we then run that executeable like we run any other program on the command line 
-- to compiler our kilo.c file , we run "cc kilo.c -o kilo" on the terminal , -o stands for output and specefies that the output executeable should be named kilo
-- to run kilo we type "./kilo" the program wont return an output yet but i can check the exit status by running "echo $?" and i see the perfect 0
-- compiling the new code everytime using "cc kilo.c -o kilo" is a lil tiring so to autmate that we use Makefile
-- what is Makefile? i jus write a make program , it allows me to ruply run make and it will complile the program for me , i just have to sypply a Makefile to tell it how i wanna compile it 
-- Makefile(contents)
-kilo: kilo.c
-	$(CC) kilo.c -o kilo -Wall -Wextra -pedantic -std=c99
-the first line says that kilo is what we want to built and kilo.c is required to build it the second line specifies the command to run in order to actually build kilo out of kilo.c and the indents are very much needed here
-(copied from book):-$(CC) is a variable that make expands to cc by default.
--Wall stands for “all Warnings”, and gets the compiler to warn you when it sees code in your program that might not technically be wrong, but is considered bad or questionable usage of the C language, like using variables before initializing them.
--Wextra and -pedantic turn on even more warnings. For each step in this tutorial, if your program compiles, it shouldn’t produce any warnings except for “unused variable” warnings in some cases. If you get any other warnings, check to make sure your code exactly matches the code in that step.
--std=c99 specifies the exact version of the C language standard we’re using, which is C99. C99 allows us to declare variables anywhere within a function, whereas ANSI C requires all variables to be declared at the top of a function or block.
-- to run this Makefile i just need to type "make" on terminal and the output is "make: 'kilo' is up to date."
+# Kilo Text Editor Journal
 
-6/11/26
--now working on the actual app , first user inputs ie the things user type on their keyboard
--read() and STDII_FILENO COME FROM <unistd.h>. we are asking read() read 1 byte from the standard input into the variable c, and to keep doing it until there are no more bytes to read.
--read() returns the number of bytes it read and will return 0 when it reaches the end of a file
--now if i run ./kilo , the terminal gets hookedup to standard input and so keyboard inputs get read into c 
--but the problem is terminal is default on "canonical mode" or "cooked mode" this means the on the terminal i can write wtv i want and when i hit enter only then my program sees it ,ie i can write some text like "hello 123   world " i wanna now remove the white spaces and the numbers in it , i have the luxury to do this , so i can change it to "hello world" and press enter and then only my program will be able to see this input , we can't do this in a text editor right, so i will need to switch the terminal to "raw mode" there is no easy way to turn off canonical mode , so we do this by turning off alot of flags in terminal , which we will be doing in future of this project
--alr so updating the code and compiling the program , i can see it asks for an input infinitely , which is the perfect behavior of the code i just wrote 
--now lets add a "quit" input which means updating the loop such that "c!=(quit button wtv i choose)"
--now i need to turn of echo 
-	1. what is echo? - the text when typed on terminal , what i 			 		see on the terminal IS what echo shows to user
-	2. why turn it off? - if i press 'a' , terminal does nothing and kilo decides where and when to display 'a'
-	3. one liner- a txt editor should control its own screen rendering and not let terminal decide what to display , so we disable echo 
--breakdown of functions enableRawMode
-	1.struct termios raw;
-	creates a structure that stores terminal settings
-	2. tcgetattr(STDIN_FILENO, &raw);
-	fetches the terminal's current settings and stores them inside raw
-	STDIN_FILENO - input from keyboard
-	&raw - where to store th input
-	3. raw.c_lflag &= !(ECHO);
-	- c_lflag: Contains terminal's local flags.
-- ECHO: Controls automatic display of typed characters.
-- ~ECHO: Inverts the ECHO bit.
-- &=: Performs bitwise AND and updates c_lflag.
-this basically turns OFF echo , while preserving the other local flags
+## 05/11/26
 
-	4. tcsetattr(STDIN_FILENO, TCSAFLUSH , &raw);
+### Starting the Project
+
+- im starting this project because i am tired of leetcoding and dsa and want to do something else.
+- also this project will be coded in C because i saw the GATE syllabus has C language in it.
+- i'll be following: https://viewsourcecode.org/snaptoken/kilo/index.html
+- i am also doing it on a linux OS. downloading C on windows was a pain in the ass.
+- C works perfectly on linux, checked using a new file `hello.c`. i'm gonna keep this file just for the love of the game.
+- so startin with the book, it says its an update to antirez's kilo editor.
+- name of the editor is **kilo**.
+
+### Understanding C and Compilation
+
+- `main()` function in C is special because it is the starting point when i run any program. when i return from `main()`, the program exits and passes the returned integer back to the OS, ie `0` (`return 0`). a return value of 0 indicates success.
+- C is a compiled language, so we need to run our program through a C compiler to turn it into an executable file. we then run that executable like we run any other program on the command line.
+- to compile our `kilo.c` file, we run:
+
+```bash
+cc kilo.c -o kilo
