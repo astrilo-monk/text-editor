@@ -21,3 +21,31 @@ the first line says that kilo is what we want to built and kilo.c is required to
 -Wextra and -pedantic turn on even more warnings. For each step in this tutorial, if your program compiles, it shouldn’t produce any warnings except for “unused variable” warnings in some cases. If you get any other warnings, check to make sure your code exactly matches the code in that step.
 -std=c99 specifies the exact version of the C language standard we’re using, which is C99. C99 allows us to declare variables anywhere within a function, whereas ANSI C requires all variables to be declared at the top of a function or block.
 - to run this Makefile i just need to type "make" on terminal and the output is "make: 'kilo' is up to date."
+
+6/11/26
+-now working on the actual app , first user inputs ie the things user type on their keyboard
+-read() and STDII_FILENO COME FROM <unistd.h>. we are asking read() read 1 byte from the standard input into the variable c, and to keep doing it until there are no more bytes to read.
+-read() returns the number of bytes it read and will return 0 when it reaches the end of a file
+-now if i run ./kilo , the terminal gets hookedup to standard input and so keyboard inputs get read into c 
+-but the problem is terminal is default on "canonical mode" or "cooked mode" this means the on the terminal i can write wtv i want and when i hit enter only then my program sees it ,ie i can write some text like "hello 123   world " i wanna now remove the white spaces and the numbers in it , i have the luxury to do this , so i can change it to "hello world" and press enter and then only my program will be able to see this input , we can't do this in a text editor right, so i will need to switch the terminal to "raw mode" there is no easy way to turn off canonical mode , so we do this by turning off alot of flags in terminal , which we will be doing in future of this project
+-alr so updating the code and compiling the program , i can see it asks for an input infinitely , which is the perfect behavior of the code i just wrote 
+-now lets add a "quit" input which means updating the loop such that "c!=(quit button wtv i choose)"
+-now i need to turn of echo 
+	1. what is echo? - the text when typed on terminal , what i 			 		see on the terminal IS what echo shows to user
+	2. why turn it off? - if i press 'a' , terminal does nothing and kilo decides where and when to display 'a'
+	3. one liner- a txt editor should control its own screen rendering and not let terminal decide what to display , so we disable echo 
+-breakdown of functions enableRawMode
+	1.struct termios raw;
+	creates a structure that stores terminal settings
+	2. tcgetattr(STDIN_FILENO, &raw);
+	fetches the terminal's current settings and stores them inside raw
+	STDIN_FILENO - input from keyboard
+	&raw - where to store th input
+	3. raw.c_lflag &= !(ECHO);
+	- c_lflag: Contains terminal's local flags.
+- ECHO: Controls automatic display of typed characters.
+- ~ECHO: Inverts the ECHO bit.
+- &=: Performs bitwise AND and updates c_lflag.
+this basically turns OFF echo , while preserving the other local flags
+
+	4. tcsetattr(STDIN_FILENO, TCSAFLUSH , &raw);
