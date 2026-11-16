@@ -450,3 +450,58 @@ return 0;
   4. read the terminal's response.
   5. parse the row and column values using sscanf().
 - now the editor can detect the terminal dimensions instead of relying on a hardcoded value of 24.
+
+
+## 16/11/26
+
+### 1. Fixing Previous Code
+
+- came back to the project after a break and realized i had forgotten where i left off.
+- checked my `kilo.c` and found that i had accidentally defined `getCursorPosition()` twice.
+- removed the duplicate debugging implementation.
+- fixed the cursor response reading loop by incrementing `i` after every character. otherwise, the buffer kept getting overwritten at the same position.
+- removed the temporary `1 ||` condition from `getWindowsSize()` so that `ioctl()` is tried first.
+- removed unnecessary `editorReadKey()` calls that were consuming terminal input.
+
+### 2. Completing Raw Input and Output
+
+- today i worked on completing the Raw Input and Output chapter of the Kilo tutorial.
+- went through the remaining steps and combined the code snippets into one `kilo.c` file.
+- kept the existing code structure and my own commenting style.
+
+### 3. Understanding the Append Buffer
+
+- introduced a structure called `abuf` which stores a character buffer and its length.
+- `abAppend()` adds data to the buffer using `realloc()` and `memcpy()`.
+- `abFree()` frees the allocated memory.
+- the idea is to collect everything we want to display and send it to the terminal together instead of making multiple `write()` calls.
+
+### 4. Improving Screen Rendering
+
+- added a welcome message in the middle of the screen.
+- used `snprintf()` to format the welcome message with the editor version.
+- added terminal escape sequences to clear individual lines.
+- added logic to hide the cursor while refreshing the screen and show it again after rendering.
+
+### 5. Cursor Movement
+
+- added `cx` and `cy` to the global editor configuration.
+- implemented cursor movement using the arrow keys.
+- added boundary checks so the cursor cannot move outside the terminal screen.
+- added support for Page Up and Page Down.
+- added support for Home and End keys.
+
+### 6. Handling Escape Sequences
+
+- arrow keys and other special keys send multiple bytes instead of a single character.
+- updated `editorReadKey()` to identify these escape sequences.
+- added support for different Home and End key sequences because terminals can send them differently.
+- added detection for the Delete key. it is detected but does not perform any operation yet.
+
+### 7. Current Progress
+
+- completed the Raw Input and Output chapter.
+- the editor can now render its basic interface and respond to cursor movement keys.
+- it still cannot open or edit text files. that will be covered in the next chapter.
+
+**next:** start the chapter on displaying text files.
