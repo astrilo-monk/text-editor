@@ -69,7 +69,8 @@ int getCursorPosition(int *rows, int *cols){
         if(read(STDIN_FILENO, &buf[i],1) != 1) 
             break;
         if(buf[i] == 'R')
-            break; 
+            break;
+        i++;
     }
     buf[i] = '\0';
 
@@ -85,10 +86,10 @@ int getCursorPosition(int *rows, int *cols){
 int getWindowsSize(int *rows, int *cols){
     struct winsize ws;
 
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
+    if(ioctl(STDOUT_FILENO , TIOCGWINSZ , &ws) == -1 || ws.ws_col == 0) {
         if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) 
             return -1;
-        editorReadKey();
+
         return getCursorPosition(rows,cols);
     }
     else{
